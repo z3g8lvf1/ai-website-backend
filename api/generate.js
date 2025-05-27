@@ -30,7 +30,7 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: "openai/gpt-4o-mini",
+        model: "deepseek-ai/DeepSeek-R1",
         messages: [{ role: "user", content: prompt }]
       })
     });
