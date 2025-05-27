@@ -1,11 +1,10 @@
 export default async function handler(req, res) {
-  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
-    return res.status(200).end(); // CORS preflight
+    return res.status(200).end();
   }
 
   if (req.method !== 'POST') {
@@ -18,13 +17,12 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Prompt is required' });
     }
 
-    // Your DeepSeek API key stored securely in Vercel env vars as DEEPSEEK_API_KEY
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
+      console.error('API key not configured');
       return res.status(500).json({ error: 'API key not configured' });
     }
 
-    // Call DeepSeek API
     const deepSeekResponse = await fetch('https://api.openrouter.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -39,14 +37,15 @@ export default async function handler(req, res) {
 
     if (!deepSeekResponse.ok) {
       const errorData = await deepSeekResponse.json();
+      console.error('DeepSeek API error:', errorData);
       return res.status(deepSeekResponse.status).json({ error: errorData });
     }
 
     const data = await deepSeekResponse.json();
-
     res.status(200).json(data);
 
   } catch (error) {
+    console.error('Handler error:', error);
     res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 }
