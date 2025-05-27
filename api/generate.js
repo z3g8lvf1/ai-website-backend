@@ -18,19 +18,33 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Prompt is required' });
     }
 
-    // Replace this with your real API call to DeepSeek or OpenAI
-    // Here's a dummy example response to test
-    const result = {
-      choices: [
-        {
-          message: {
-            content: `You sent: "${prompt}". This is a dummy response. Replace with your AI call.`
-          }
-        }
-      ]
-    };
+    // Your DeepSeek API key stored securely in Vercel env vars as DEEPSEEK_API_KEY
+    const apiKey = process.env.OPENROUTER_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: 'API key not configured' });
+    }
 
-    res.status(200).json(result);
+    // Call DeepSeek API
+    const deepSeekResponse = await fetch('https://api.openrouter.ai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: "openai/gpt-4o-mini",
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+
+    if (!deepSeekResponse.ok) {
+      const errorData = await deepSeekResponse.json();
+      return res.status(deepSeekResponse.status).json({ error: errorData });
+    }
+
+    const data = await deepSeekResponse.json();
+
+    res.status(200).json(data);
 
   } catch (error) {
     res.status(500).json({ error: error.message || 'Internal Server Error' });
