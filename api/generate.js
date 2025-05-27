@@ -23,7 +23,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'API key not configured' });
     }
 
-    const deepSeekResponse = await fetch('https://api.openrouter.ai/v1/chat/completions', {
+    const deepSeekResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
