@@ -1,28 +1,34 @@
-export default async function handler(req, res) {
+import express from 'express';
+
+const app = express();
+app.use(express.json());
+
+const port = process.env.PORT || 3000;
+
+app.options('/api/generate', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.sendStatus(200);
+});
+
+app.post('/api/generate', async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  const { prompt } = req.body;
+  if (!prompt) {
+    return res.status(400).json({ error: 'Prompt is required' });
   }
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Only POST method allowed' });
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) {
+    console.error('API key not configured');
+    return res.status(500).json({ error: 'API key not configured' });
   }
 
   try {
-    const { prompt } = req.body;
-    if (!prompt) {
-      return res.status(400).json({ error: 'Prompt is required' });
-    }
-
-    const apiKey = process.env.OPENROUTER_API_KEY;
-    if (!apiKey) {
-      console.error('API key not configured');
-      return res.status(500).json({ error: 'API key not configured' });
-    }
-
     const deepSeekResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -48,4 +54,8 @@ export default async function handler(req, res) {
     console.error('Handler error:', error);
     res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
-}
+});
+
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});
