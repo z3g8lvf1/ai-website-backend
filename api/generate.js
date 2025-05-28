@@ -52,11 +52,23 @@ app.post('/api/generate', async (req, res) => {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
+  const { prompt: userInput } = req.body;
+
+  if (!userInput || typeof userInput !== 'string') {
+    return res.status(400).json({ error: 'User prompt is required and must be a string.' });
+  }
+
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     console.error('API key not configured');
     return res.status(500).json({ error: 'API key not configured' });
   }
+
+  const fullPrompt = `
+${flawlessUniversalPrompt}
+
+User instructions: ${userInput}
+  `.trim();
 
   try {
     const deepSeekResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -67,7 +79,7 @@ app.post('/api/generate', async (req, res) => {
       },
       body: JSON.stringify({
         model: "deepseek/deepseek-chat-v3-0324:free",
-        messages: [{ role: "user", content: flawlessUniversalPrompt }]
+        messages: [{ role: "user", content: fullPrompt }]
       })
     });
 
