@@ -5,6 +5,7 @@ app.use(express.json());
 
 const port = process.env.PORT || 3000;
 
+// Allow preflight requests
 app.options('/api/generate', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -12,49 +13,51 @@ app.options('/api/generate', (req, res) => {
   res.sendStatus(200);
 });
 
-const flawlessUniversalPrompt = `
+// Updated dynamic base prompt logic
+function buildFullPrompt(userInput) {
+  return `
 You are a professional full-stack web developer and UX designer.
 
-Generate a single fully responsive, accessible, single-page website in ONE complete HTML file named index.html.
+Generate a complete, mobile-first, responsive, single-page website as a single HTML file (index.html). It must use:
 
-Use semantic HTML5, Tailwind CSS (via CDN), and vanilla JavaScript included in script tags inside the same file.
+- Semantic HTML5
+- Tailwind CSS via CDN
+- Vanilla JavaScript (inside <script> tags in the HTML file)
 
-All features and interactive elements must be FULLY FUNCTIONING, not just UI mockups:
-- Dark mode toggle must switch themes with working JavaScript and smooth transitions.
-- Navigation menu must support smooth scrolling to each section using JavaScript.
-- Contact form must have working client-side validation for name, email, and message.
-- Include placeholder actions or inline notes in JavaScript for sending form data via POST.
-- Toggle menus (like mobile nav) must open/close correctly.
-- All hover, scroll, and click interactions must behave as expected using JS/CSS.
-- Add meaningful ARIA roles for accessibility.
-- Ensure all scripts and interactions are tested to function across mobile, tablet, and desktop.
+This site must be based on the following user request:
+"${userInput}"
 
-Based solely on the user's site description, automatically choose the most relevant sections from this list:
-- Header with logo/site name and navigation
-- Hero/banner with headline and call-to-action
-- About or introduction
-- Services, features, or products
-- Portfolio or gallery
-- Testimonials or reviews
-- Pricing/donations
-- Blog/news preview
+Adapt your response to fully match the user's topic (e.g., if they request a game website, include features like leaderboard sections, embedded gameplay, modern gaming UI, etc).
+
+Mandatory functional features to include (adjusted to suit the topic):
+- Smooth scroll navigation
+- Dark mode toggle with working JS and transitions
+- Mobile nav menu toggle
+- Working client-side form validation (email, name, message)
+- Placeholder or stub for backend submission
+- Responsive layout using Tailwind's utility classes
+- ARIA attributes and keyboard accessibility
+
+Automatically include the most relevant sections for the topic:
+- Hero/banner with call-to-action
+- About/introduction
+- Features, services, or gameplay mechanics
+- Testimonials or ratings (if relevant)
 - Contact form
 - Footer with social links and copyright
-- Fully functioning dark mode toggle
 
-In each section, include placeholder text that briefly tells the user what to write or upload to personalize the site.
+In each section, include placeholder text or hints for the user to customize.
 
-Ensure the site is:
-- Mobile-first and responsive across all screen sizes
-- Fully accessible with ARIA support and keyboard navigation
-- Optimized for fast load: no unnecessary libraries, compress assets
-- Uses clean, readable, semantic HTML5
-- Uses Tailwind CSS (CDN) and vanilla JS
-- Written in ONE valid and complete HTML file
+Strict output requirements:
+- Everything in one valid HTML file
+- No explanations, markdown, or extra commentary
+- Use clean, readable code — prioritize performance and accessibility
 
-Output ONLY the full content of index.html — no explanations, no extra text.
-`;
+Output only the raw HTML content of index.html.
+`.trim();
+}
 
+// POST /api/generate
 app.post('/api/generate', async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -72,11 +75,7 @@ app.post('/api/generate', async (req, res) => {
     return res.status(500).json({ error: 'API key not configured' });
   }
 
-  const fullPrompt = `
-${flawlessUniversalPrompt}
-
-User instructions: ${userInput}
-  `.trim();
+  const fullPrompt = buildFullPrompt(userInput);
 
   try {
     const deepSeekResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -106,6 +105,7 @@ User instructions: ${userInput}
   }
 });
 
+// Start the server
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
