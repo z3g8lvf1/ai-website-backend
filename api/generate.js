@@ -13,47 +13,95 @@ app.options('/api/generate', (req, res) => {
   res.sendStatus(200);
 });
 
-// Updated dynamic base prompt logic
+// Enhanced prompt with strict functionality requirements
 function buildFullPrompt(userInput) {
   return `
-You are a professional full-stack web developer and UX designer.
+You are a professional full-stack web developer and UX designer. Your task is to create a complete, production-ready single-page website that has all features fully functional.
 
-Generate a complete, mobile-first, responsive, single-page website as a single HTML file (index.html). It must use:
-
+Generate a mobile-first, responsive website as a single HTML file (index.html) using:
 - Semantic HTML5
-- Tailwind CSS via CDN
-- Vanilla JavaScript (inside <script> tags in the HTML file)
+- Tailwind CSS via CDN (v3.4+)
+- Vanilla JavaScript (inside <script> tags)
 
-This site must be based on the following user request:
-"${userInput}"
+BASED ON USER REQUEST: "${userInput}"
 
-Adapt your response to fully match the user's topic (e.g., if they request a game website, include features like leaderboard sections, embedded gameplay, modern gaming UI, etc).
+MANDATORY FUNCTIONAL REQUIREMENTS (must all work perfectly):
+1. Navigation:
+   - Smooth scroll to sections
+   - Active link highlighting as user scrolls
+   - Mobile hamburger menu that works on all screen sizes
+   - Accessible with keyboard navigation
 
-Mandatory functional features to include (adjusted to suit the topic):
-- Smooth scroll navigation
-- Dark mode toggle with working JS and transitions
-- Mobile nav menu toggle
-- Working client-side form validation (email, name, message)
-- Placeholder or stub for backend submission
-- Responsive layout using Tailwind's utility classes
-- ARIA attributes and keyboard accessibility
+2. Dark Mode Toggle:
+   - Must persist user preference in localStorage
+   - Smooth transitions between modes
+   - Proper contrast ratios in both modes
+   - Toggle button with accessible ARIA labels
 
-Automatically include the most relevant sections for the topic:
-- Hero/banner with call-to-action
-- About/introduction
-- Features, services, or gameplay mechanics
-- Testimonials or ratings (if relevant)
-- Contact form
-- Footer with social links and copyright
+3. Contact Form:
+   - Client-side validation for:
+     * Email (proper format)
+     * Name (minimum 2 characters)
+     * Message (minimum 10 characters)
+   - Clear error messages
+   - Form submission handler (prevent default + success message)
+   - Reset functionality
 
-In each section, include placeholder text or hints for the user to customize.
+4. Responsive Design:
+   - Properly adapts to all screen sizes
+   - Tested breakpoints: 320px, 768px, 1024px, 1440px
+   - No horizontal scroll on mobile
+   - Touch-friendly interactive elements
 
-Strict output requirements:
-- Everything in one valid HTML file
-- No explanations, markdown, or extra commentary
-- Use clean, readable code — prioritize performance and accessibility
+5. Accessibility:
+   - ARIA attributes where needed
+   - Keyboard navigable
+   - Proper heading hierarchy
+   - Alt text for images
+   - Sufficient color contrast
 
-Output only the raw HTML content of index.html.
+6. Performance:
+   - No render-blocking resources
+   - Efficient JavaScript
+   - Optimized assets
+
+SECTION REQUIREMENTS (all must be present and functional):
+- Hero Section:
+  * Primary call-to-action button that works
+  * Animated background or visual element
+
+- Features/Services:
+  * Interactive elements (hover effects, tabs, etc.)
+  * Icons or visual indicators
+
+- Testimonials:
+  * Functional slider/carousel if multiple
+  * Proper attribution
+
+- Contact Form:
+  * As specified above with working validation
+
+- Footer:
+  * Working social media links (open in new tab)
+  * Copyright notice with current year
+
+CODING STANDARDS:
+1. Use modern ES6 JavaScript with proper error handling
+2. All interactive elements must have visual feedback
+3. Include all necessary event listeners
+4. No console errors when tested
+5. All images must have placeholder src with alt text
+6. Include viewport meta tag
+7. Set proper lang attribute on HTML tag
+8. Include favicon link (can use placeholder)
+
+OUTPUT REQUIREMENTS:
+- Only output the complete, valid HTML file
+- No markdown, explanations, or comments
+- Ready to save directly as index.html and work immediately
+- All code must be properly formatted and indented
+
+The website must work perfectly when the HTML file is opened directly in a browser, with no additional setup required.
 `.trim();
 }
 
