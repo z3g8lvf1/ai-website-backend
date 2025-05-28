@@ -19,32 +19,40 @@ Generate a single fully responsive, accessible, single-page website in ONE compl
 
 Use semantic HTML5, Tailwind CSS (via CDN), and vanilla JavaScript included in script tags inside the same file.
 
-Based solely on the user's site description, automatically choose the most relevant sections from the following list and include them:
-- Header with logo/site name and navigation menu supporting smooth scrolling
-- Hero/banner with headline, brief description, and a clear call-to-action
-- About or introduction with text and an image
-- Services, features, or product overview with icons or images
-- Portfolio, gallery, or product listing with hover effects
-- Testimonials or social proof with names and photos
-- Pricing plans, donation buttons, or event registration form if appropriate
-- Blog or news preview
-- Contact form with accessible labels, placeholders guiding user input, and client-side validation
-- Footer with social media links and copyright info
-- Dark mode toggle for user preference
+All features and interactive elements must be FULLY FUNCTIONING, not just UI mockups:
+- Dark mode toggle must switch themes with working JavaScript and smooth transitions.
+- Navigation menu must support smooth scrolling to each section using JavaScript.
+- Contact form must have working client-side validation for name, email, and message.
+- Include placeholder actions or inline notes in JavaScript for sending form data via POST.
+- Toggle menus (like mobile nav) must open/close correctly.
+- All hover, scroll, and click interactions must behave as expected using JS/CSS.
+- Add meaningful ARIA roles for accessibility.
+- Ensure all scripts and interactions are tested to function across mobile, tablet, and desktop.
 
-In every section you generate, include clear placeholder text inside headings, paragraphs, form fields, or image alt attributes that briefly explain what content the user should write or upload to make the site look professional and complete. For example, the About section should say: "Write a brief introduction about yourself or your company here."
+Based solely on the user's site description, automatically choose the most relevant sections from this list:
+- Header with logo/site name and navigation
+- Hero/banner with headline and call-to-action
+- About or introduction
+- Services, features, or products
+- Portfolio or gallery
+- Testimonials or reviews
+- Pricing/donations
+- Blog/news preview
+- Contact form
+- Footer with social links and copyright
+- Fully functioning dark mode toggle
+
+In each section, include placeholder text that briefly tells the user what to write or upload to personalize the site.
 
 Ensure the site is:
-- Fully mobile-first and responsive across all devices
-- Accessible, including ARIA roles and keyboard navigation support
-- Optimized for fast loading (minimal external resources, compressed images placeholders, efficient scripts)
-- Uses modern UI/UX best practices: harmonious colors, readable typography, ample whitespace, and subtle animations
-- Smooth scrolling navigation for anchor links
-- Dark mode toggle that smoothly switches color schemes
+- Mobile-first and responsive across all screen sizes
+- Fully accessible with ARIA support and keyboard navigation
+- Optimized for fast load: no unnecessary libraries, compress assets
+- Uses clean, readable, semantic HTML5
+- Uses Tailwind CSS (CDN) and vanilla JS
+- Written in ONE valid and complete HTML file
 
-Write clean, semantic, well-indented, and valid HTML, CSS, and JavaScript in this one file.
-
-Output only the complete content of index.html, ready to deploy with no bugs or errors.
+Output ONLY the full content of index.html — no explanations, no extra text.
 `;
 
 app.post('/api/generate', async (req, res) => {
