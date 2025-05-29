@@ -107,7 +107,7 @@ The website must work perfectly when the HTML file is opened directly in a brows
 
 // POST /api/generate
 app.post('/api/generate', async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://z3g8lvf1.github.io');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
